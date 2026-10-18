@@ -54,7 +54,7 @@ EXPLAIN QUERY PLAN SELECT id FROM orders WHERE deleted_at IS NULL ORDER BY creat
 
 * **Server-side keyset (cursor) pagination.** The browser only ever gets 50 rows + a `nextCursor`. Cursor = `(sort value, id)`; the query is `WHERE (created_at, id) < (?, ?) ORDER BY created_at DESC, id DESC LIMIT 51`, so page 1,000 costs the same as page 1 (`OFFSET` would not).
 * **Indexes** (all partial: `WHERE deleted_at IS NULL`, all end in `id` as the tie-breaker):
-  `(created_at, id)`, `(total_amount, id)`, `(status, created_at, id)`, `(status, total_amount, id)`. Measured on 50,000 rows: every list query < 5 ms.
+  `(created_at, id)`, `(total_cents, id)`, `(status, created_at, id)`, `(status, total_cents, id)`. Measured on 50,000 rows: every list query < 5 ms.
 * **Search**: SQLite **FTS5** index over name + email, word-prefix matching (`jo sm` finds "John Smith" and `john.smith@…`). Input is turned into a safe quoted FTS query, so users cannot inject FTS syntax.
 * **Virtualised rendering**: only the ~20 visible rows exist in the DOM; the next page loads when the "Loading more…" row scrolls into view.
 * **Stale responses**: the filters are the TanStack Query *key*, so a response is only ever written under the key it was requested with, and `AbortController` cancels the superseded request. Search is also debounced (250 ms).

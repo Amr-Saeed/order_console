@@ -4,7 +4,13 @@ import { dirname } from "node:path";
 
 export type DB = Database.Database;
 
-export const STATUSES = ["pending", "paid", "shipped", "delivered", "cancelled"] as const;
+export const STATUSES = [
+  "pending",
+  "paid",
+  "shipped",
+  "delivered",
+  "cancelled",
+] as const;
 export type Status = (typeof STATUSES)[number];
 
 const SCHEMA = `
@@ -28,7 +34,6 @@ CREATE TABLE IF NOT EXISTS orders (
   idempotency_key TEXT,
   request_hash    TEXT,
   -- THE duplicate guarantee: one key per user can only ever create one row.
-  -- (NULLs are distinct in SQLite, so seeded orders without a key are fine.)
   UNIQUE (created_by, idempotency_key)
 );
 
@@ -41,8 +46,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 CREATE INDEX IF NOT EXISTS idx_items_order ON order_items(order_id);
 
--- Keyset-pagination indexes. Every one ends in id (the tie-breaker) and is
--- partial (live rows only) so it matches the "deleted_at IS NULL" in the query.
+
 CREATE INDEX IF NOT EXISTS idx_orders_date         ON orders(created_at, id)               WHERE deleted_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_orders_amount       ON orders(total_cents, id)              WHERE deleted_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_orders_status_date  ON orders(status, created_at, id)       WHERE deleted_at IS NULL;

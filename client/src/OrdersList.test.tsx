@@ -7,8 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { User } from "./api";
-import { OrdersList } from "./OrdersList";
+import type { User } from "./utils/api";
+import { OrdersList } from "./features/orders/components/OrdersList";
 
 const user: User = { id: 1, email: "agent@x.test", role: "agent" };
 

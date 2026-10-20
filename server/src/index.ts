@@ -10,4 +10,6 @@ const app = await buildApp({
   debugDelay: config.debugDelay && !config.isProd,
   logger: true,
 });
-await app.listen({ port: config.port, host: "127.0.0.1" });
+await app.listen(config.port, "127.0.0.1", () => {
+  console.log(`API listening on http://127.0.0.1:${config.port}`);
+});

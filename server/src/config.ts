@@ -13,6 +13,6 @@ export const config = {
 
 export function assertConfig() {
   if (config.jwtSecret.length < 32) {
-    throw new Error("JWT_SECRET is missing or shorter than 32 characters. Run `npm run setup` (it creates .env).");
+    throw new Error("JWT_SECRET is missing or shorter than 32 characters. Run `npm install` or create server/.env from .env.example.");
   }
 }
